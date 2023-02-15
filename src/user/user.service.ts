@@ -49,7 +49,7 @@ export function deleteUser(id: string) {
   foundUserIndex = users.findIndex((user: User) => user.id === id);
   console.log(foundUserIndex);
 
-  if (foundUserIndex < 0) {
+  if (foundUserIndex >= 0) {
     users.slice(foundUserIndex);
     return {
       msg: "user deleted",
