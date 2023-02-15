@@ -1,5 +1,6 @@
 import * as Express from "express";
 import { authRouter } from "./auth/auth.controller";
+import { bookMarkRouter } from "./bookMark/BookMark.controller";
 import { authentication } from "./core/middleware.service";
 import { userRouter } from "./user/user.controller";
 
@@ -11,7 +12,7 @@ app.get("/", (req, res, _next) => {
 
 app.use(Express.json());
 app.use(authRouter);
-
+app.use(bookMarkRouter);
 app.use(userRouter);
 
 app.listen(8080, () => {
