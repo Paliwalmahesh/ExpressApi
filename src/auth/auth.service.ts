@@ -1,47 +1,39 @@
-import { compare, hash } from 'bcrypt';
+import { compare, hash } from "bcrypt";
 import { sign as jwt } from "jsonwebtoken";
-import { v4 as uuid } from 'uuid';
-
-type User = {
-    id: string;
-    email: string;
-    password: string;
-};
-const users: User[] = []
+import { v4 as uuid } from "uuid";
+import { userStore } from "../core/userstore";
+import { User } from "../core/userstore";
 
 export async function signup(authData: User) {
-    console.log("called");
+  const { email, password } = authData;
+  const hasedPassword = await hash(password, 10);
+  const id = uuid();
+  userStore.save({
+    id: id,
+    email: email,
+    password: hasedPassword,
+  });
 
-    const { email, password } = authData
-    const hasedPassword = await hash(password, 10)
-    const id = uuid()
-    users.push({
-        id: id,
-        email: email,
-        password: hasedPassword
-    })
-    console.log(users);
-
-    return users;
+  return userStore.get();
 }
 
 export async function signin(authData: { email: string; password: string }) {
-    const { email, password } = authData
-    const foundUser = users.find((user) => user.email === email)
+  const { email, password } = authData;
 
-    if (!foundUser) {
-        console.log("Invalid Userid")
-    }
-    if (!compare(password, foundUser.password)) {
-        console.log("Invalid password")
-    }
-    const payLoad = {
-        email: foundUser.email,
-        password: foundUser.password,
-    }
+  const foundUser = userStore.getByEmail(email);
 
-    const access_token = jwt(payLoad, 'secret')
+  if (!foundUser) {
+    return "Invalid Userid";
+  }
+  if (!compare(password, foundUser.password)) {
+    return "Invalid password";
+  }
+  var payLoad = {
+    id: foundUser.id,
+    email: foundUser.email,
+  };
 
-    return access_token
+  const access_token = jwt(payLoad, "shhhhh");
 
+  return access_token;
 }

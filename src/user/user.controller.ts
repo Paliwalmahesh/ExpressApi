@@ -1,15 +1,15 @@
 import { query, Router } from "express";
+import { authentication } from "../core/middleware.service";
 import { createUser, deleteUser, getUser, getUsers } from "./user.service";
 
 export const userRouter = Router();
-
+userRouter.use(authentication);
 userRouter.get("/users", (req, res, _next) => {
   res.status(200).send(getUsers());
 });
 
 userRouter.get("/users/:id", (req, res, _next) => {
   const id = req.params.id;
-  console.log(id);
 
   res.status(200).send(getUser(id));
 });
