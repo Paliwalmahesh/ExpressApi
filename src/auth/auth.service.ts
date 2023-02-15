@@ -33,7 +33,7 @@ export async function signin(authData: { email: string; password: string }) {
     email: foundUser.email,
   };
 
-  const access_token = jwt(payLoad, "shhhhh");
+  const access_token = await jwt(payLoad, "shhhhh");
 
   return access_token;
 }
